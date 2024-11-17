@@ -6,10 +6,47 @@
 /*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 17:42:07 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/11/17 17:44:39 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/11/17 23:53:50 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include "../ft_printf/inc/ft_printf.h"
-#include "../lib_ft/inc/libft.h"
+#ifndef CUB3D_H
+# define CUB3D_H
+
+
+# include "../ft_printf/inc/ft_printf.h"
+# include "../lib_ft/inc/libft.h"
+# include <unistd.h>
+# include <fcntl.h>
+# include <stdlib.h>
+# include <string.h>
+# include <stddef.h>
+# include <stdio.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
+
+typedef struct s_map_node
+{
+	char				*line;
+	struct s_map_node	*next;
+}						t_map_node;
+
+typedef struct s_config
+{
+	char		*no_texture;
+	char		*so_texture;
+	char		*we_texture;
+	char		*ea_texture;
+	int			floor_color;
+	int			ceiling_color;
+	char		**map;
+	t_map_node	*map_list;
+}				t_config;
+
+char		*get_next_line(int fd);
+void		open_map_and_else(char *av);
+void		write_error(char *str);
+
+#endif

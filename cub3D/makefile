@@ -1,7 +1,9 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
 
-SRC =	cub3d.c
+SRC =	cub3d.c \
+		src/checking/checking_map.c \
+		src/get_next_line/get_next_line.c \
 
 OBJ = $(SRC:.c=.o)
 NAME = cub3D
