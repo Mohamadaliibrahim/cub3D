@@ -6,7 +6,7 @@
 /*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 17:42:07 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/11/17 23:53:50 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/11/18 20:10:09 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ typedef struct s_config
 	char		*so_texture;
 	char		*we_texture;
 	char		*ea_texture;
+	int			player_x;
+	int			player_y;
+	char		player_orientation;
 	int			floor_color;
 	int			ceiling_color;
 	char		**map;
@@ -46,7 +49,9 @@ typedef struct s_config
 }				t_config;
 
 char		*get_next_line(int fd);
-void		open_map_and_else(char *av);
+void		open_map_and_else(char *av, t_config *confige);
 void		write_error(char *str);
+void	convert_map_list_to_array(t_config *config);
+void	free_config(t_config *config);
 
 #endif
