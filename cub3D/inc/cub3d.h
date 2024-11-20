@@ -6,7 +6,7 @@
 /*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 17:42:07 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/11/18 20:10:09 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/11/20 16:58:51 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ typedef struct s_config
 char		*get_next_line(int fd);
 void		open_map_and_else(char *av, t_config *confige);
 void		write_error(char *str);
-void	convert_map_list_to_array(t_config *config);
-void	free_config(t_config *config);
+void		convert_map_list_to_array(t_config *config);
+void		free_config(t_config *config);
+void		validate_map(t_config *confige);
 
 #endif
