@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 17:42:07 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/11/22 23:15:12 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/25 00:28:39 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,36 @@ typedef struct s_game
      int window_width;    // Add this line
     int window_height;
 }				t_game;
+
+typedef struct s_draw_wall_params
+{
+	int		x;
+	int		start;
+	int		end;
+	int		line_height;
+	int		tex_id;
+	int		tex_x;
+	double	tex_step;
+	double	wall_x;
+}	t_draw_wall_params;
+
+typedef struct s_wall_params
+{
+	double	camera_x;
+	double	ray_dir_x;
+	double	ray_dir_y;
+	int		map_x;
+	int		map_y;
+	double	side_dist_x;
+	double	side_dist_y;
+	double	delta_dist_x;
+	double	delta_dist_y;
+	double	perp_wall_dist;
+	int		step_x;
+	int		step_y;
+	int		hit;
+	int		side;
+}	t_wall_params;
 
 char		*get_next_line(int fd);
 void		open_map_and_else(char *av, t_config *confige);
