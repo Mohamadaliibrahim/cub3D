@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checking_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 20:35:35 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/11/22 01:01:04 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/29 10:53:41 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,6 @@ void	parse_color_line(char *line, t_config *confige)
 	char	*color_values;
 	int		red, green, blue;
 
-	// Trim leading and trailing spaces
 	trimmed_line = ft_strtrim(line, " \t");
 	if (!trimmed_line)
 	{
@@ -109,8 +108,6 @@ void	parse_color_line(char *line, t_config *confige)
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
-
-	// Find the first space character to split the identifier and the values
 	char *space_ptr = ft_strchr(trimmed_line, ' ');
 	if (!space_ptr)
 	{
@@ -119,8 +116,6 @@ void	parse_color_line(char *line, t_config *confige)
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
-
-	// Extract the identifier
 	int identifier_len = space_ptr - trimmed_line;
 	identifier = ft_substr(trimmed_line, 0, identifier_len);
 	if (!identifier)
@@ -130,8 +125,6 @@ void	parse_color_line(char *line, t_config *confige)
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
-
-	// Extract and trim the color values string
 	color_values = ft_strtrim(space_ptr + 1, " \t");
 	if (!color_values)
 	{
@@ -141,8 +134,6 @@ void	parse_color_line(char *line, t_config *confige)
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
-
-	// Parse the color values
 	if (!parse_color_values(color_values, &red, &green, &blue))
 	{
 		write_error("Error: Invalid color values\n");
@@ -152,8 +143,6 @@ void	parse_color_line(char *line, t_config *confige)
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
-
-	// Assign the color values
 	if (ft_strcmp(identifier, "F") == 0)
 	{
 		if (confige->f_r != -1)
@@ -171,15 +160,6 @@ void	parse_color_line(char *line, t_config *confige)
 	}
 	else if (ft_strcmp(identifier, "C") == 0)
 	{
-		// if (confige->c_r != -1)
-		// {
-		// 	write_error("Error: Duplicate ceiling color definition2\n");
-		// 	free(color_values);
-		// 	free(identifier);
-		// 	free(trimmed_line);
-		// 	free_config(confige);
-		// 	exit(EXIT_FAILURE);
-		// }
 		confige->c_r = red;
 		confige->c_g = green;
 		confige->c_b = blue;
@@ -193,8 +173,6 @@ void	parse_color_line(char *line, t_config *confige)
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
-
-	// Clean up
 	free(color_values);
 	free(identifier);
 	free(trimmed_line);
@@ -345,7 +323,7 @@ void	check_type(char **trimmed_line, t_config *config)
 	else
 	{
 		write_error("Error: Invalid line in map file\n");
-		free(*trimmed_line);
+		free(*trimmed_line);c
 		free_config(config);
 		exit(EXIT_FAILURE);
 	}

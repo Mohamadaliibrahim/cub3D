@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 23:16:10 by marvin            #+#    #+#             */
-/*   Updated: 2024/11/24 23:37:09 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/29 10:46:29 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,8 @@ void	update_direction(t_game *game);
 void	render_b(t_game *game);
 int		game_loop(t_game *game);
 
-void	free_config(t_config *config)
+void	free_config_1(t_config *config)
 {
-	int	i;
-
 	if (config->no_texture)
 	{
 		free(config->no_texture);
@@ -45,6 +43,13 @@ void	free_config(t_config *config)
 		free(config->ea_texture);
 		config->ea_texture = NULL;
 	}
+}
+
+void	free_config(t_config *config)
+{
+	int	i;
+
+	free_config_1(config);
 	if (config->map)
 	{
 		i = 0;
@@ -132,6 +137,19 @@ void	print_config(t_config conf)
 	}
 }
 
+void	destroing(t_game *game)
+{
+	if (game->mlx)
+	{
+		mlx_destroy_display(game->mlx);
+	}
+	if (game->mlx)
+	{
+		free(game->mlx);
+		game->mlx = NULL;
+	}
+}
+
 void	exit_program(t_game *game)
 {
 	int	i;
@@ -156,17 +174,7 @@ void	exit_program(t_game *game)
 		mlx_destroy_window(game->mlx, game->win);
 		game->win = NULL;
 	}
-#ifdef __linux__
-	if (game->mlx)
-	{
-		mlx_destroy_display(game->mlx);
-	}
-#endif
-	if (game->mlx)
-	{
-		free(game->mlx);
-		game->mlx = NULL;
-	}
+	destroing(game);
 	free_config(&game->config);
 	exit(0);
 }
@@ -178,17 +186,21 @@ int	close_window(t_game *game)
 	return (0);
 }
 
-void	initialize_game_window(t_game *game)
+void	initialize_mlx(t_game *game)
 {
-	int	screen_width;
-	int	screen_height;
-
 	game->mlx = mlx_init();
 	if (!game->mlx)
 	{
 		write_error("Error: Failed to initialize MLX\n");
 		exit_program(game);
 	}
+}
+
+void	initialize_window(t_game *game)
+{
+	int	screen_width;
+	int	screen_height;
+
 	mlx_get_screen_size(game->mlx, &screen_width, &screen_height);
 	game->window_width = screen_width;
 	game->window_height = screen_height;
@@ -199,7 +211,12 @@ void	initialize_game_window(t_game *game)
 		write_error("Error: Failed to create a window\n");
 		exit_program(game);
 	}
-	game->img = mlx_new_image(game->mlx, screen_width, screen_height);
+}
+
+void	initialize_image(t_game *game)
+{
+	game->img = mlx_new_image(game->mlx, game->window_width,
+			game->window_height);
 	if (!game->img)
 	{
 		write_error("Error: Failed to create an image\n");
@@ -207,6 +224,10 @@ void	initialize_game_window(t_game *game)
 	}
 	game->img_addr = mlx_get_data_addr(game->img, &game->bpp,
 			&game->line_length, &game->endian);
+}
+
+void	initialize_player(t_game *game)
+{
 	game->player_x = game->config.player_x + 0.5;
 	game->player_y = game->config.player_y + 0.5;
 	game->dir_x = cos(game->player_angle);
@@ -214,6 +235,15 @@ void	initialize_game_window(t_game *game)
 	game->plane_x = -sin(game->player_angle) * 0.66;
 	game->plane_y = cos(game->player_angle) * 0.66;
 }
+
+void	initialize_game_window(t_game *game)
+{
+	initialize_mlx(game);
+	initialize_window(game);
+	initialize_image(game);
+	initialize_player(game);
+}
+
 
 void	set_pixel(t_game *game, int x, int y, int color)
 {
@@ -257,31 +287,36 @@ void	update_direction(t_game *game)
 	game->plane_y = cos(game->player_angle) * 0.66;
 }
 
+void	set_new(int	keycode, double *x, double *y, double speed, t_game *game)
+{
+	if (keycode == 119)
+	{
+		*x = game->player_x + game->dir_x * speed;
+		*y = game->player_y + game->dir_y * speed;
+	}
+	else if (keycode == 115)
+	{
+		*x = game->player_x - game->dir_x * speed;
+		*y = game->player_y - game->dir_y * speed;
+	}
+	else if (keycode == 97)
+	{
+		*x = game->player_x - game->plane_x * speed;
+		*y = game->player_y - game->plane_y * speed;
+	}
+	else if (keycode == 100)
+	{
+		*x = game->player_x + game->plane_x * speed;
+		*y = game->player_y + game->plane_y * speed;
+	}
+}
+
 void	handle_movement(int keycode, t_game *game, double move_speed)
 {
 	double	new_x;
 	double	new_y;
 
-	if (keycode == 119)
-	{
-		new_x = game->player_x + game->dir_x * move_speed;
-		new_y = game->player_y + game->dir_y * move_speed;
-	}
-	else if (keycode == 115)
-	{
-		new_x = game->player_x - game->dir_x * move_speed;
-		new_y = game->player_y - game->dir_y * move_speed;
-	}
-	else if (keycode == 97)
-	{
-		new_x = game->player_x - game->plane_x * move_speed;
-		new_y = game->player_y - game->plane_y * move_speed;
-	}
-	else if (keycode == 100)
-	{
-		new_x = game->player_x + game->plane_x * move_speed;
-		new_y = game->player_y + game->plane_y * move_speed;
-	}
+	set_new(keycode, &new_x, &new_y, move_speed, game);
 	if (game->config.map[(int)(new_y)][(int)(game->player_x)] != '1')
 		game->player_y = new_y;
 	if (game->config.map[(int)(game->player_y)][(int)(new_x)] != '1')
@@ -463,8 +498,8 @@ void	calculate_perp_wall_dist(t_game *game, t_wall_params *wp)
 				+ (1 - wp->step_y) / 2) / wp->ray_dir_y;
 }
 
-void	calculate_draw_params(t_game *game, t_draw_wall_params *dwp,
-		t_wall_params *wp, int x)
+void	calculate_line_params(t_game *game, t_draw_wall_params *dwp,
+		t_wall_params *wp)
 {
 	dwp->line_height = (int)(game->window_height / wp->perp_wall_dist);
 	dwp->start = -dwp->line_height / 2 + game->window_height / 2;
@@ -473,6 +508,10 @@ void	calculate_draw_params(t_game *game, t_draw_wall_params *dwp,
 	dwp->end = dwp->line_height / 2 + game->window_height / 2;
 	if (dwp->end >= game->window_height)
 		dwp->end = game->window_height - 1;
+}
+
+void	calculate_texture_id(t_draw_wall_params *dwp, t_wall_params *wp)
+{
 	if (wp->side == 0)
 	{
 		if (wp->ray_dir_x > 0)
@@ -487,6 +526,11 @@ void	calculate_draw_params(t_game *game, t_draw_wall_params *dwp,
 		else
 			dwp->tex_id = 3;
 	}
+}
+
+void	calculate_texture_coords(t_game *game, t_draw_wall_params *dwp,
+		t_wall_params *wp)
+{
 	if (wp->side == 0)
 		dwp->wall_x = game->player_y + wp->perp_wall_dist * wp->ray_dir_y;
 	else
@@ -497,6 +541,14 @@ void	calculate_draw_params(t_game *game, t_draw_wall_params *dwp,
 		|| (wp->side == 1 && wp->ray_dir_y < 0))
 		dwp->tex_x = game->tex_width - dwp->tex_x - 1;
 	dwp->tex_step = 1.0 * game->tex_height / dwp->line_height;
+}
+
+void	calculate_draw_params(t_game *game, t_draw_wall_params *dwp,
+		t_wall_params *wp, int x)
+{
+	calculate_line_params(game, dwp, wp);
+	calculate_texture_id(dwp, wp);
+	calculate_texture_coords(game, dwp, wp);
 	dwp->x = x;
 }
 
