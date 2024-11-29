@@ -6,7 +6,7 @@
 /*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 20:35:35 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/11/29 10:54:40 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/11/29 12:19:06 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	convert_map_list_to_array(t_config *config)
 	i = 0;
 	while (current)
 	{
-		if (!current->line)int j
+		if (!current->line)
 		{
 			write_error("Error: Map line is NULL\n");
 			exit(1);

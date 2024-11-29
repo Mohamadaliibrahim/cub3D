@@ -6,7 +6,7 @@
 /*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 20:35:35 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/11/29 10:53:41 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/11/29 12:18:57 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,7 +323,7 @@ void	check_type(char **trimmed_line, t_config *config)
 	else
 	{
 		write_error("Error: Invalid line in map file\n");
-		free(*trimmed_line);c
+		free(*trimmed_line);
 		free_config(config);
 		exit(EXIT_FAILURE);
 	}
