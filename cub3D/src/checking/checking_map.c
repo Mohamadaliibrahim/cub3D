@@ -6,7 +6,7 @@
 /*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 20:35:35 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/01 20:02:15 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/12/01 20:38:56 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,16 +88,15 @@ int	parse_color_values(char *str, int rgb[3])
 	return (result);
 }
 
-static void	assign_color(char *identifier, int rgb[3], t_config *confige,
-		char *trimmed_line)
+void	assign_color(char *id, int rgb[3], t_config *confige, char *line)
 {
-	if (ft_strcmp(identifier, "F") == 0)
+	if (ft_strcmp(id, "F") == 0)
 	{
 		if (confige->f_r != -1)
 		{
 			write_error("Error: Duplicate floor color definition\n");
-			free(identifier);
-			free(trimmed_line);
+			free(id);
+			free(line);
 			free_config(confige);
 			exit(EXIT_FAILURE);
 		}
@@ -105,13 +104,13 @@ static void	assign_color(char *identifier, int rgb[3], t_config *confige,
 		confige->f_g = rgb[1];
 		confige->f_b = rgb[2];
 	}
-	else if (ft_strcmp(identifier, "C") == 0)
+	else if (ft_strcmp(id, "C") == 0)
 	{
 		if (confige->c_r != -1)
 		{
 			write_error("Error: Duplicate ceiling color definition\n");
-			free(identifier);
-			free(trimmed_line);
+			free(id);
+			free(line);
 			free_config(confige);
 			exit(EXIT_FAILURE);
 		}
@@ -121,43 +120,42 @@ static void	assign_color(char *identifier, int rgb[3], t_config *confige,
 	}
 	else
 	{
-		write_error("Error: Unknown color identifier\n");
-		free(identifier);
-		free(trimmed_line);
+		write_error("Error: Unknown color id\n");
+		free(id);
+		free(line);
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
 }
 
-static void	parse_identifier_and_values(char *trimmed_line, char **identifier,
-		char **color_values, t_config *confige)
+void	parse_values(char *line, char **id, char **color, t_config *confige)
 {
 	char	*space_ptr;
-	int		identifier_len;
+	int		id_len;
 
-	space_ptr = ft_strchr(trimmed_line, ' ');
+	space_ptr = ft_strchr(line, ' ');
 	if (!space_ptr)
 	{
 		write_error("Error: Invalid color line format\n");
-		free(trimmed_line);
+		free(line);
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
-	identifier_len = space_ptr - trimmed_line;
-	*identifier = ft_substr(trimmed_line, 0, identifier_len);
-	if (!*identifier)
+	id_len = space_ptr - line;
+	*id = ft_substr(line, 0, id_len);
+	if (!*id)
 	{
 		write_error("Error: Memory allocation failed\n");
-		free(trimmed_line);
+		free(line);
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
-	*color_values = ft_strtrim(space_ptr + 1, " \t");
-	if (!*color_values)
+	*color = ft_strtrim(space_ptr + 1, " \t");
+	if (!*color)
 	{
 		write_error("Error: Memory allocation failed\n");
-		free(*identifier);
-		free(trimmed_line);
+		free(*id);
+		free(line);
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
@@ -177,8 +175,7 @@ void	parse_color_line(char *line, t_config *confige)
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
-	parse_identifier_and_values(trimmed_line, &identifier, &color_values,
-		confige);
+	parse_values(trimmed_line, &identifier, &color_values, confige);
 	if (!parse_color_values(color_values, rgb))
 	{
 		write_error("Error: Invalid color values\n");
@@ -224,7 +221,7 @@ void	add_to_map(char *line, t_config *config)
 	}
 }
 
-static char	*get_texture_path(char **parts, t_config *confige)
+char	*get_texture_path(char **parts, t_config *confige)
 {
 	char	*texture_path;
 	int		fd;
@@ -260,61 +257,60 @@ static char	*get_texture_path(char **parts, t_config *confige)
 	return (texture_path);
 }
 
-static void	assign_texture(char *identifier, char *texture_path,
-		t_config *confige, char **parts)
+void	assign(char *id, char *path, t_config *confige, char **parts)
 {
-	if (ft_strcmp(identifier, "NO") == 0)
+	if (ft_strcmp(id, "NO") == 0)
 	{
 		if (confige->no_texture != NULL)
 		{
 			write_error("Error: Duplicate NO texture definition\n");
-			free(texture_path);
+			free(path);
 			two_d_free(parts);
 			free_config(confige);
 			exit(EXIT_FAILURE);
 		}
-		confige->no_texture = texture_path;
+		confige->no_texture = path;
 	}
-	else if (ft_strcmp(identifier, "SO") == 0)
+	else if (ft_strcmp(id, "SO") == 0)
 	{
 		if (confige->so_texture != NULL)
 		{
 			write_error("Error: Duplicate SO texture definition\n");
-			free(texture_path);
+			free(path);
 			two_d_free(parts);
 			free_config(confige);
 			exit(EXIT_FAILURE);
 		}
-		confige->so_texture = texture_path;
+		confige->so_texture = path;
 	}
-	else if (ft_strcmp(identifier, "WE") == 0)
+	else if (ft_strcmp(id, "WE") == 0)
 	{
 		if (confige->we_texture != NULL)
 		{
 			write_error("Error: Duplicate WE texture definition\n");
-			free(texture_path);
+			free(path);
 			two_d_free(parts);
 			free_config(confige);
 			exit(EXIT_FAILURE);
 		}
-		confige->we_texture = texture_path;
+		confige->we_texture = path;
 	}
-	else if (ft_strcmp(identifier, "EA") == 0)
+	else if (ft_strcmp(id, "EA") == 0)
 	{
 		if (confige->ea_texture != NULL)
 		{
 			write_error("Error: Duplicate EA texture definition\n");
-			free(texture_path);
+			free(path);
 			two_d_free(parts);
 			free_config(confige);
 			exit(EXIT_FAILURE);
 		}
-		confige->ea_texture = texture_path;
+		confige->ea_texture = path;
 	}
 	else
 	{
-		write_error("Error: Unknown texture identifier\n");
-		free(texture_path);
+		write_error("Error: Unknown texture id\n");
+		free(path);
 		two_d_free(parts);
 		free_config(confige);
 		exit(EXIT_FAILURE);
@@ -335,7 +331,7 @@ void	parse_texture_line(char *line, t_config *confige)
 		exit(EXIT_FAILURE);
 	}
 	texture_path = get_texture_path(parts, confige);
-	assign_texture(parts[0], texture_path, confige, parts);
+	assign(parts[0], texture_path, confige, parts);
 	two_d_free(parts);
 }
 
@@ -354,39 +350,35 @@ void	check_type(char **trimmed_line, t_config *config)
 	}
 }
 
-static void	process_line(char *trimmed_line, t_config *confige,
-		int *map_started, int *map_ended, int fd)
+int	process_line(char *line, t_config *confige, int *m_start, int *m_end)
 {
-	if (*trimmed_line != '\0')
+	if (*line != '\0')
 	{
-		if (is_map_line(trimmed_line))
+		if (is_map_line(line))
 		{
-			if (*map_ended)
+			if (*m_end)
 			{
 				write_error("Error: Invalid content after map data\n");
-				free(trimmed_line);
-				free_config(confige);
-				close(fd);
-				exit(EXIT_FAILURE);
+				free(line);
+				return (-1);
 			}
-			*map_started = 1;
-			add_to_map(trimmed_line, confige);
+			*m_start = 1;
+			add_to_map(line, confige);
 		}
-		else if (!*map_started)
-			check_type(&trimmed_line, confige);
+		else if (!*m_start)
+			check_type(&line, confige);
 		else
 		{
-			*map_ended = 1;
+			*m_end = 1;
 			write_error("Error: Invalid line in map file after map data\n");
-			free(trimmed_line);
-			free_config(confige);
-			close(fd);
-			exit(EXIT_FAILURE);
+			free(line);
+			return (-1);
 		}
 	}
-	else if (*map_started)
-		*map_ended = 1;
-	free(trimmed_line);
+	else if (*m_start)
+		*m_end = 1;
+	free(line);
+	return (0);
 }
 
 void	open_map_and_else(char *av, t_config *confige)
@@ -420,7 +412,12 @@ void	open_map_and_else(char *av, t_config *confige)
 			close(fd);
 			exit(EXIT_FAILURE);
 		}
-		process_line(trimmed_line, confige, &map_started, &map_ended, fd);
+		if (process_line(trimmed_line, confige, &map_started, &map_ended) == -1)
+		{
+			free_config(confige);
+			close(fd);
+			exit(EXIT_FAILURE);
+		}
 		line = get_next_line(fd);
 	}
 	close(fd);

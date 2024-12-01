@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/18 19:52:41 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/01 19:27:38 by mohamibr         ###   ########.fr       */
+/*   Created: 2024/12/01 20:26:55 by mohamibr          #+#    #+#             */
+/*   Updated: 2024/12/01 20:26:56 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,22 @@ void	check_map_charecters(t_config *confige)
 	}
 }
 
+void	player_err(int player_count, t_config *confige)
+{
+	if (player_count == 0)
+	{
+		write_error("Error: No player starting position in map\n");
+		free_config(confige);
+		exit(EXIT_FAILURE);
+	}
+	else if (player_count > 1)
+	{
+		write_error("Error: Multiple player starting positions in map\n");
+		free_config(confige);
+		exit(EXIT_FAILURE);
+	}
+}
+
 void	check_player_position(t_config *confige)
 {
 	int	i;
@@ -59,18 +75,7 @@ void	check_player_position(t_config *confige)
 		}
 		i++;
 	}
-	if (player_count == 0)
-	{
-		write_error("Error: No player starting position in map\n");
-		free_config(confige);
-		exit(EXIT_FAILURE);
-	}
-	else if (player_count > 1)
-	{
-		write_error("Error: Multiple player starting positions in map\n");
-		free_config(confige);
-		exit(EXIT_FAILURE);
-	}
+	player_err(player_count, confige);
 }
 
 int	is_line_closed(char *line)
@@ -102,21 +107,30 @@ int	is_surrounded_by_walls(char **map, int i, int j)
 	int	height;
 	int	line_length;
 
-	// int	width;
 	height = get_map_height(map);
 	line_length = ft_strlen(map[i]);
-	// Check up
 	if (i == 0 || j >= ft_strlen(map[i - 1]) || map[i - 1][j] == ' ')
 		return (0);
-	// Check down
 	if (i + 1 >= height || j >= ft_strlen(map[i + 1]) || map[i + 1][j] == ' ')
 		return (0);
-	// Check left
 	if (j == 0 || map[i][j - 1] == ' ')
 		return (0);
-	// Check right
 	if (j + 1 >= line_length || map[i][j + 1] == ' ')
 		return (0);
+	return (1);
+}
+
+int	close_check(int *i, char **map, int *j)
+{
+	while (map[*i][*j])
+	{
+		if (map[*i][*j] == '0' || ft_strchr("NSEW", map[*i][*j]))
+		{
+			if (!is_surrounded_by_walls(map, *i, *j))
+				return (0);
+		}
+		(*j)++;
+	}
 	return (1);
 }
 
@@ -139,15 +153,8 @@ int	is_map_closed(char **map)
 			return (0);
 		if (!ft_strchr("1 ", map[i][0]) || !ft_strchr("1 ", map[i][width - 1]))
 			return (0);
-		while (map[i][j])
-		{
-			if (map[i][j] == '0' || ft_strchr("NSEW", map[i][j]))
-			{
-				if (!is_surrounded_by_walls(map, i, j))
-					return (0);
-			}
-			j++;
-		}
+		if (close_check(&i, map, &j) == 0)
+			return (0);
 		i++;
 	}
 	return (1);
