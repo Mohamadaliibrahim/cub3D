@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 19:52:41 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/11/22 00:58:50 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/01 19:27:38 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,9 +100,9 @@ int	get_map_height(char **map)
 int	is_surrounded_by_walls(char **map, int i, int j)
 {
 	int	height;
-	// int	width;
 	int	line_length;
 
+	// int	width;
 	height = get_map_height(map);
 	line_length = ft_strlen(map[i]);
 	// Check up
