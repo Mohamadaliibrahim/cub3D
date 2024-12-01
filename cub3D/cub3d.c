@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mjoundi <mjoundi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 23:16:10 by marvin            #+#    #+#             */
-/*   Updated: 2024/11/29 10:46:29 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/12/01 18:51:33 by mjoundi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,6 @@ void	initialize_game_window(t_game *game)
 	initialize_player(game);
 }
 
-
 void	set_pixel(t_game *game, int x, int y, int color)
 {
 	char	*pixel;
@@ -287,28 +286,12 @@ void	update_direction(t_game *game)
 	game->plane_y = cos(game->player_angle) * 0.66;
 }
 
-void	set_new(int	keycode, double *x, double *y, double speed, t_game *game)
+void	handle_mov2(double new_x, double new_y, t_game *game)
 {
-	if (keycode == 119)
-	{
-		*x = game->player_x + game->dir_x * speed;
-		*y = game->player_y + game->dir_y * speed;
-	}
-	else if (keycode == 115)
-	{
-		*x = game->player_x - game->dir_x * speed;
-		*y = game->player_y - game->dir_y * speed;
-	}
-	else if (keycode == 97)
-	{
-		*x = game->player_x - game->plane_x * speed;
-		*y = game->player_y - game->plane_y * speed;
-	}
-	else if (keycode == 100)
-	{
-		*x = game->player_x + game->plane_x * speed;
-		*y = game->player_y + game->plane_y * speed;
-	}
+	if (game->config.map[(int)(new_y)][(int)(game->player_x)] != '1')
+		game->player_y = new_y;
+	if (game->config.map[(int)(game->player_y)][(int)(new_x)] != '1')
+		game->player_x = new_x;
 }
 
 void	handle_movement(int keycode, t_game *game, double move_speed)
@@ -316,11 +299,27 @@ void	handle_movement(int keycode, t_game *game, double move_speed)
 	double	new_x;
 	double	new_y;
 
-	set_new(keycode, &new_x, &new_y, move_speed, game);
-	if (game->config.map[(int)(new_y)][(int)(game->player_x)] != '1')
-		game->player_y = new_y;
-	if (game->config.map[(int)(game->player_y)][(int)(new_x)] != '1')
-		game->player_x = new_x;
+	if (keycode == 119)
+	{
+		new_x = game->player_x + game->dir_x * move_speed;
+		new_y = game->player_y + game->dir_y * move_speed;
+	}
+	else if (keycode == 115)
+	{
+		new_x = game->player_x - game->dir_x * move_speed;
+		new_y = game->player_y - game->dir_y * move_speed;
+	}
+	else if (keycode == 97)
+	{
+		new_x = game->player_x - game->plane_x * move_speed;
+		new_y = game->player_y - game->plane_y * move_speed;
+	}
+	else if (keycode == 100)
+	{
+		new_x = game->player_x + game->plane_x * move_speed;
+		new_y = game->player_y + game->plane_y * move_speed;
+	}
+	handle_mov2(new_x, new_y, game);
 }
 
 int	key_press(int keycode, t_game *game)
@@ -330,7 +329,8 @@ int	key_press(int keycode, t_game *game)
 	move_speed = MOVE_SPEED;
 	if (keycode == 65307)
 		close_window(game);
-	else if (keycode == 119 || keycode == 115 || keycode == 97 || keycode == 100)
+	else if (keycode == 119
+		|| keycode == 115 || keycode == 97 || keycode == 100)
 		handle_movement(keycode, game, move_speed);
 	else if (keycode == 65361)
 	{
