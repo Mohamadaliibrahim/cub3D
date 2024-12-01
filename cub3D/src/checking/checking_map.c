@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checking_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mjoundi <mjoundi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 20:35:35 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/01 19:27:13 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/12/01 19:29:38 by mjoundi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,8 @@ int	parse_color_values(char *str, int rgb[3])
 	return (result);
 }
 
-static void	assign_color(char *identifier, int rgb[3], t_config *confige,
-		char *trimmed_line)
+static void	assign_color(char *identifier, int rgb[3],
+			t_config *confige, char *trimmed_line)
 {
 	if (ft_strcmp(identifier, "F") == 0)
 	{
@@ -129,8 +129,9 @@ static void	assign_color(char *identifier, int rgb[3], t_config *confige,
 	}
 }
 
-static void	parse_identifier_and_values(char *trimmed_line, char **identifier,
-		char **color_values, t_config *confige)
+static void	parse_identifier_and_values(char *trimmed_line,
+				char **identifier, char **color_values,
+				t_config *confige)
 {
 	char	*space_ptr;
 	int		identifier_len;
@@ -177,8 +178,8 @@ void	parse_color_line(char *line, t_config *confige)
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
-	parse_identifier_and_values(trimmed_line, &identifier, &color_values,
-		confige);
+	parse_identifier_and_values(trimmed_line, &identifier,
+		&color_values, confige);
 	if (!parse_color_values(color_values, rgb))
 	{
 		write_error("Error: Invalid color values\n");
@@ -261,7 +262,7 @@ static char	*get_texture_path(char **parts, t_config *confige)
 }
 
 static void	assign_texture(char *identifier, char *texture_path,
-		t_config *confige, char **parts)
+				t_config *confige, char **parts)
 {
 	if (ft_strcmp(identifier, "NO") == 0)
 	{
@@ -354,14 +355,13 @@ void	check_type(char **trimmed_line, t_config *config)
 	}
 }
 
-static void	process_line(char *trimmed_line, t_config *confige,
-		int *map_started, int *map_ended, int fd)
+static void	process_line(char *trimmed_line, t_config *confige, int fd)
 {
 	if (*trimmed_line != '\0')
 	{
 		if (is_map_line(trimmed_line))
 		{
-			if (*map_ended)
+			if (confige->map_ended)
 			{
 				write_error("Error: Invalid content after map data\n");
 				free(trimmed_line);
@@ -369,14 +369,14 @@ static void	process_line(char *trimmed_line, t_config *confige,
 				close(fd);
 				exit(EXIT_FAILURE);
 			}
-			*map_started = 1;
+			confige->map_started = 1;
 			add_to_map(trimmed_line, confige);
 		}
-		else if (!*map_started)
+		else if (!confige->map_started)
 			check_type(&trimmed_line, confige);
 		else
 		{
-			*map_ended = 1;
+			confige->map_ended = 1;
 			write_error("Error: Invalid line in map file after map data\n");
 			free(trimmed_line);
 			free_config(confige);
@@ -384,8 +384,8 @@ static void	process_line(char *trimmed_line, t_config *confige,
 			exit(EXIT_FAILURE);
 		}
 	}
-	else if (*map_started)
-		*map_ended = 1;
+	else if (confige->map_started)
+		confige->map_ended = 1;
 	free(trimmed_line);
 }
 
@@ -393,12 +393,10 @@ void	open_map_and_else(char *av, t_config *confige)
 {
 	int		fd;
 	char	*line;
-	int		map_started;
-	int		map_ended;
-		char *trimmed_line;
+	char	*trimmed_line;
 
-	map_started = 0;
-	map_ended = 0;
+	confige->map_started = 0;
+	confige->map_ended = 0;
 	ft_memset(confige, 0, sizeof(t_config));
 	confige->f_r = -1;
 	confige->c_r = -1;
@@ -420,7 +418,7 @@ void	open_map_and_else(char *av, t_config *confige)
 			close(fd);
 			exit(EXIT_FAILURE);
 		}
-		process_line(trimmed_line, confige, &map_started, &map_ended, fd);
+		process_line(trimmed_line, confige, fd);
 		line = get_next_line(fd);
 	}
 	close(fd);
