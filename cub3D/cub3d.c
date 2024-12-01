@@ -6,7 +6,7 @@
 /*   By: mjoundi <mjoundi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 23:16:10 by marvin            #+#    #+#             */
-/*   Updated: 2024/12/01 18:51:33 by mjoundi          ###   ########.fr       */
+/*   Updated: 2024/12/01 19:58:51 by mjoundi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ void	print_config(t_config conf)
 	printf("E:%s\n", conf.ea_texture);
 	printf("PX: %d\n", conf.player_x);
 	printf("PY: %d\n", conf.player_y);
-	printf("PO: %d\n", conf.player_orientation);
+	printf("PO: %c\n", conf.player_orientation);
 	printf("FC: %d %d %d\n", conf.f_r, conf.f_g, conf.f_b);
 	printf("CC: %d %d %d\n", conf.c_r, conf.c_g, conf.c_b);
 	while (conf.map && conf.map[i])
@@ -230,6 +230,16 @@ void	initialize_player(t_game *game)
 {
 	game->player_x = game->config.player_x + 0.5;
 	game->player_y = game->config.player_y + 0.5;
+	if (game->config.player_orientation == 'E')
+		game->player_angle = 3 * M_PI / 2;
+	else if (game->config.player_orientation == 'W')
+		game->player_angle = M_PI / 2;
+	else if (game->config.player_orientation == 'N')
+		game->player_angle = 0;
+	else if (game->config.player_orientation == 'S')
+		game->player_angle = M_PI;
+	else
+		game->player_angle = 0;
 	game->dir_x = cos(game->player_angle);
 	game->dir_y = sin(game->player_angle);
 	game->plane_x = -sin(game->player_angle) * 0.66;
@@ -594,7 +604,6 @@ int	main(int ac, char **av)
 		file_name(av[1]);
 		game.config = check_map(av[1]);
 		print_config(game.config);
-		game.player_angle = M_PI / 2;
 		initialize_game_window(&game);
 		load_textures(&game);
 		render_b(&game);

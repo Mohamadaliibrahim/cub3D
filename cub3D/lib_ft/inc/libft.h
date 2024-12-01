@@ -54,4 +54,5 @@ char	**ft_split(char const *s, char c);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char	*ft_itoa(int n);
 int     ft_strcmp(const char *s1, const char *s2);
+char	*ft_strcpy(char *dst, const char *src);
 #endif
