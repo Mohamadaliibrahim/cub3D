@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjoundi <mjoundi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 23:16:10 by marvin            #+#    #+#             */
-/*   Updated: 2024/12/01 19:58:51 by mjoundi          ###   ########.fr       */
+/*   Updated: 2024/12/02 18:53:33 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,27 +113,6 @@ void	file_name(char *str)
 	{
 		write_error("cub3D: Error: Not a .cub file\n");
 		exit(1);
-	}
-}
-
-void	print_config(t_config conf)
-{
-	int	i;
-
-	i = 0;
-	printf("N:%s\n", conf.no_texture);
-	printf("S:%s\n", conf.so_texture);
-	printf("W:%s\n", conf.we_texture);
-	printf("E:%s\n", conf.ea_texture);
-	printf("PX: %d\n", conf.player_x);
-	printf("PY: %d\n", conf.player_y);
-	printf("PO: %c\n", conf.player_orientation);
-	printf("FC: %d %d %d\n", conf.f_r, conf.f_g, conf.f_b);
-	printf("CC: %d %d %d\n", conf.c_r, conf.c_g, conf.c_b);
-	while (conf.map && conf.map[i])
-	{
-		printf("%s\n", conf.map[i]);
-		i++;
 	}
 }
 
@@ -603,7 +582,6 @@ int	main(int ac, char **av)
 	{
 		file_name(av[1]);
 		game.config = check_map(av[1]);
-		print_config(game.config);
 		initialize_game_window(&game);
 		load_textures(&game);
 		render_b(&game);

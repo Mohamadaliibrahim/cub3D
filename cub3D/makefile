@@ -5,7 +5,12 @@ SRC =	cub3d.c \
 		src/checking/checking_map.c \
 		src/get_next_line/get_next_line.c \
 		src/converting/converting.c \
-		src/validate_map/validate_map.c
+		src/validate_map/validate_map.c\
+		src/validate_map/utils.c\
+		src/checking/checking.c\
+		src/checking/parsing.c\
+		src/checking/utils.c\
+		src/checking/value.c
 
 OBJ = $(SRC:.c=.o)
 NAME = cub3

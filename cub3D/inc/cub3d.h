@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 17:42:07 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/11/25 00:28:39 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/02 18:49:41 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
-#define MOVE_SPEED 0.1  // Movement speed: Adjust for how fast the player moves
-#define ROT_SPEED 0.05
+# define MOVE_SPEED 0.1
+# define ROT_SPEED 0.05
 
 # include "../ft_printf/inc/ft_printf.h"
 # include "../lib_ft/inc/libft.h"
@@ -23,10 +23,10 @@
 # include <string.h>
 # include <stddef.h>
 # include <stdio.h>
-#include <mlx.h>
-#include <X11/X.h>
-#include <X11/keysym.h>
-#include <math.h>
+# include <mlx.h>
+# include <X11/X.h>
+# include <X11/keysym.h>
+# include <math.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
@@ -53,38 +53,38 @@ typedef struct s_config
 	int			c_r;
 	int			c_g;
 	int			c_b;
-	int 		map_width;
-    int 		map_height;
+	int			map_width;
+	int			map_height;
 	char		**map;
 	t_map_node	*map_list;
 }				t_config;
 
 typedef struct s_game
 {
-    void		*mlx;
-    void		*win;
-    void		*img;
-    char		*img_addr;
-    int		bpp;
-    int		line_length;
-    int		endian;
-    t_config	config;
-    double player_x;
-    double player_y;
-    double player_angle;
-    double dir_x;
-    double dir_y;
-    double plane_x;
-    double plane_y;
-	void        *textures[4];       // Array to hold the textures for North, South, West, East
-    char        *tex_data[4];       // Data pointers for each texture (color data)
-    int         tex_width;          // Width of the textures
-    int         tex_height;         // Height of the textures
-    int         tex_bpp;            // Bits per pixel for textures
-    int         tex_line_length;    // Line length for texture data
-    int         tex_endian;      // Player's Y position
-     int window_width;    // Add this line
-    int window_height;
+	void		*mlx;
+	void		*win;
+	void		*img;
+	char		*img_addr;
+	int			bpp;
+	int			line_length;
+	int			endian;
+	t_config	config;
+	double		player_x;
+	double		player_y;
+	double		player_angle;
+	double		dir_x;
+	double		dir_y;
+	double		plane_x;
+	double		plane_y;
+	void		*textures[4];
+	char		*tex_data[4];
+	int			tex_width;
+	int			tex_height;
+	int			tex_bpp;
+	int			tex_line_length;
+	int			tex_endian;
+	int			window_width;
+	int			window_height;
 }				t_game;
 
 typedef struct s_draw_wall_params
@@ -117,11 +117,40 @@ typedef struct s_wall_params
 	int		side;
 }	t_wall_params;
 
-char		*get_next_line(int fd);
-void		open_map_and_else(char *av, t_config *confige);
-void		write_error(char *str);
-void		convert_map_list_to_array(t_config *config);
-void		free_config(t_config *config);
-void		validate_map(t_config *confige);
-
+int		is_surrounded_by_walls(char **map, int i, int j);
+int		close_check(int *i, char **map, int *j);
+int		get_map_height(char **map);
+int		is_line_closed(char *line);
+int		is_map_line(char *line);
+int		is_color_line(char *line);
+int		is_texture_line(char *line);
+int		trim_and_convert_color(char *color_str, int *color_value);
+int		is_map_line(char *line);
+char	*get_texture_path(char **parts, t_config *confige);
+char	*get_next_line(int fd);
+void	open_map_and_else(char *av, t_config *confige);
+void	write_error(char *str);
+void	convert_map_list_to_array(t_config *config);
+void	free_config(t_config *config);
+void	validate_map(t_config *confige);
+void	two_d_free(char **str);
+void	texture_err(int len, char *path, char **parts, t_config *confige);
+void	add_to_map(char *line, t_config *config);
+void	map_err(t_map_node *new_node);
+void	parse_color_line(char *line, t_config *confige);
+void	error_msg(t_config *confige);
+void	open_map_error(t_config *confige, int fd);
+void	assign_err(char *path, char **parts, t_config *confige);
+void	assign_north(char *path, char **parts, t_config *confige);
+void	check_type(char **trimmed_line, t_config *config);
+void	parse_values(char *line, char **id, char **color, t_config *confige);
+void	value_check(char **id, char *line, char **color, t_config *confige);
+void	assign_color(char *id, int rgb[3], t_config *confige, char *line);
+void	color_check(t_config *confige, char *id, int rgb[3], char *line);
+int		parse_color_values(char *str, int rgb[3]);
+void	open_map_and_else(char *av, t_config *confige);
+int		ini_open_mp(int *start, int *end, t_config *confige, char *av);
+int		process_line(char *line, t_config *confige, int *m_start, int *m_end);
+void	parse_texture_line(char *line, t_config *confige);
+void	assign(char *id, char *path, t_config *confige, char **parts);
 #endif
