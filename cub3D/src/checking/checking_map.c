@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checking_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mjoundi <mjoundi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 20:35:35 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/01 20:38:56 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/12/02 18:01:55 by mjoundi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,22 +88,25 @@ int	parse_color_values(char *str, int rgb[3])
 	return (result);
 }
 
+void	color_check(t_config *confige, char *id, int rgb[3], char *line)
+{
+	if (confige->f_r != -1)
+	{
+		write_error("Error: Duplicate floor color definition\n");
+		free(id);
+		free(line);
+		free_config(confige);
+		exit(EXIT_FAILURE);
+	}
+	confige->f_r = rgb[0];
+	confige->f_g = rgb[1];
+	confige->f_b = rgb[2];
+}
+
 void	assign_color(char *id, int rgb[3], t_config *confige, char *line)
 {
 	if (ft_strcmp(id, "F") == 0)
-	{
-		if (confige->f_r != -1)
-		{
-			write_error("Error: Duplicate floor color definition\n");
-			free(id);
-			free(line);
-			free_config(confige);
-			exit(EXIT_FAILURE);
-		}
-		confige->f_r = rgb[0];
-		confige->f_g = rgb[1];
-		confige->f_b = rgb[2];
-	}
+		color_check(confige, id, rgb, line);
 	else if (ft_strcmp(id, "C") == 0)
 	{
 		if (confige->c_r != -1)
@@ -122,6 +125,18 @@ void	assign_color(char *id, int rgb[3], t_config *confige, char *line)
 	{
 		write_error("Error: Unknown color id\n");
 		free(id);
+		free(line);
+		free_config(confige);
+		exit(EXIT_FAILURE);
+	}
+}
+
+void	value_check(char **id, char *line, char **color, t_config *confige)
+{
+	if (!*color)
+	{
+		write_error("Error: Memory allocation failed\n");
+		free(*id);
 		free(line);
 		free_config(confige);
 		exit(EXIT_FAILURE);
@@ -151,14 +166,14 @@ void	parse_values(char *line, char **id, char **color, t_config *confige)
 		exit(EXIT_FAILURE);
 	}
 	*color = ft_strtrim(space_ptr + 1, " \t");
-	if (!*color)
-	{
-		write_error("Error: Memory allocation failed\n");
-		free(*id);
-		free(line);
-		free_config(confige);
-		exit(EXIT_FAILURE);
-	}
+	value_check(id, line, color, confige);
+}
+
+void	error_msg(t_config *confige)
+{
+	write_error("Error: Memory allocation failed\n");
+	free_config(confige);
+	exit(EXIT_FAILURE);
 }
 
 void	parse_color_line(char *line, t_config *confige)
@@ -170,11 +185,7 @@ void	parse_color_line(char *line, t_config *confige)
 
 	trimmed_line = ft_strtrim(line, " \t");
 	if (!trimmed_line)
-	{
-		write_error("Error: Memory allocation failed\n");
-		free_config(confige);
-		exit(EXIT_FAILURE);
-	}
+		error_msg(confige);
 	parse_values(trimmed_line, &identifier, &color_values, confige);
 	if (!parse_color_values(color_values, rgb))
 	{
@@ -191,6 +202,16 @@ void	parse_color_line(char *line, t_config *confige)
 	free(trimmed_line);
 }
 
+void	map_err(t_map_node *new_node)
+{
+	if (!new_node->line)
+	{
+		write_error("Error: Memory allocation failed for map line\n");
+		free(new_node);
+		exit(EXIT_FAILURE);
+	}
+}
+
 void	add_to_map(char *line, t_config *config)
 {
 	t_map_node	*new_node;
@@ -203,12 +224,7 @@ void	add_to_map(char *line, t_config *config)
 		exit(EXIT_FAILURE);
 	}
 	new_node->line = ft_strdup(line);
-	if (!new_node->line)
-	{
-		write_error("Error: Memory allocation failed for map line\n");
-		free(new_node);
-		exit(EXIT_FAILURE);
-	}
+	map_err(new_node);
 	new_node->next = NULL;
 	if (!config->map_list)
 		config->map_list = new_node;
@@ -218,6 +234,19 @@ void	add_to_map(char *line, t_config *config)
 		while (current->next)
 			current = current->next;
 		current->next = new_node;
+	}
+}
+
+void	texture_err(int len, char *texture_path,
+			char **parts, t_config *confige)
+{
+	if (len < 4 || ft_strcmp(&texture_path[len - 4], ".xpm") != 0)
+	{
+		write_error("Error: Texture file is not a .xpm file\n");
+		free(texture_path);
+		two_d_free(parts);
+		free_config(confige);
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -246,75 +275,52 @@ char	*get_texture_path(char **parts, t_config *confige)
 	}
 	close(fd);
 	len = ft_strlen(texture_path);
-	if (len < 4 || ft_strcmp(&texture_path[len - 4], ".xpm") != 0)
-	{
-		write_error("Error: Texture file is not a .xpm file\n");
-		free(texture_path);
-		two_d_free(parts);
-		free_config(confige);
-		exit(EXIT_FAILURE);
-	}
+	texture_err(len, texture_path, parts, confige);
 	return (texture_path);
+}
+
+void	assign_err(char *path, char **parts, t_config *confige)
+{
+	write_error("Error: Duplicate NO texture definition\n");
+	free(path);
+	two_d_free(parts);
+	free_config(confige);
+	exit(EXIT_FAILURE);
+}
+
+void	assign_north(char *path, char **parts, t_config *confige)
+{
+	if (confige->no_texture != NULL)
+		assign_err(path, parts, confige);
+	confige->no_texture = path;
 }
 
 void	assign(char *id, char *path, t_config *confige, char **parts)
 {
 	if (ft_strcmp(id, "NO") == 0)
 	{
-		if (confige->no_texture != NULL)
-		{
-			write_error("Error: Duplicate NO texture definition\n");
-			free(path);
-			two_d_free(parts);
-			free_config(confige);
-			exit(EXIT_FAILURE);
-		}
-		confige->no_texture = path;
+		assign_north(path, parts, confige);
 	}
 	else if (ft_strcmp(id, "SO") == 0)
 	{
 		if (confige->so_texture != NULL)
-		{
-			write_error("Error: Duplicate SO texture definition\n");
-			free(path);
-			two_d_free(parts);
-			free_config(confige);
-			exit(EXIT_FAILURE);
-		}
+			assign_err(path, parts, confige);
 		confige->so_texture = path;
 	}
 	else if (ft_strcmp(id, "WE") == 0)
 	{
 		if (confige->we_texture != NULL)
-		{
-			write_error("Error: Duplicate WE texture definition\n");
-			free(path);
-			two_d_free(parts);
-			free_config(confige);
-			exit(EXIT_FAILURE);
-		}
+			assign_err(path, parts, confige);
 		confige->we_texture = path;
 	}
 	else if (ft_strcmp(id, "EA") == 0)
 	{
 		if (confige->ea_texture != NULL)
-		{
-			write_error("Error: Duplicate EA texture definition\n");
-			free(path);
-			two_d_free(parts);
-			free_config(confige);
-			exit(EXIT_FAILURE);
-		}
+			assign_err(path, parts, confige);
 		confige->ea_texture = path;
 	}
 	else
-	{
-		write_error("Error: Unknown texture id\n");
-		free(path);
-		two_d_free(parts);
-		free_config(confige);
-		exit(EXIT_FAILURE);
-	}
+		assign_err(path, parts, confige);
 }
 
 void	parse_texture_line(char *line, t_config *confige)
@@ -359,8 +365,7 @@ int	process_line(char *line, t_config *confige, int *m_start, int *m_end)
 			if (*m_end)
 			{
 				write_error("Error: Invalid content after map data\n");
-				free(line);
-				return (-1);
+				return (free(line), -1);
 			}
 			*m_start = 1;
 			add_to_map(line, confige);
@@ -377,8 +382,33 @@ int	process_line(char *line, t_config *confige, int *m_start, int *m_end)
 	}
 	else if (*m_start)
 		*m_end = 1;
-	free(line);
-	return (0);
+	return (free(line), 0);
+}
+
+int	ini_open_mp(int *map_started, int *map_ended, t_config *confige, char *av)
+{
+	int	fd;
+
+	*map_started = 0;
+	*map_ended = 0;
+	ft_memset(confige, 0, sizeof(t_config));
+	confige->f_r = -1;
+	confige->c_r = -1;
+	fd = open(av, O_RDONLY);
+	if (fd == -1)
+	{
+		write_error("Error: Cannot open map file\n");
+		exit(EXIT_FAILURE);
+	}
+	return (fd);
+}
+
+void	open_map_error(t_config *confige, int fd)
+{
+	write_error("Error: Memory allocation failed for trimmed line\n");
+	free_config(confige);
+	close(fd);
+	exit(EXIT_FAILURE);
 }
 
 void	open_map_and_else(char *av, t_config *confige)
@@ -389,17 +419,7 @@ void	open_map_and_else(char *av, t_config *confige)
 	int		map_ended;
 	char	*trimmed_line;
 
-	map_started = 0;
-	map_ended = 0;
-	ft_memset(confige, 0, sizeof(t_config));
-	confige->f_r = -1;
-	confige->c_r = -1;
-	fd = open(av, O_RDONLY);
-	if (fd == -1)
-	{
-		write_error("Error: Cannot open map file\n");
-		exit(EXIT_FAILURE);
-	}
+	fd = ini_open_mp(&map_started, &map_ended, confige, av);
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
@@ -407,10 +427,7 @@ void	open_map_and_else(char *av, t_config *confige)
 		free(line);
 		if (!trimmed_line)
 		{
-			write_error("Error: Memory allocation failed for trimmed line\n");
-			free_config(confige);
-			close(fd);
-			exit(EXIT_FAILURE);
+			open_map_error(confige, fd);
 		}
 		if (process_line(trimmed_line, confige, &map_started, &map_ended) == -1)
 		{
