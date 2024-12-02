@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjoundi <mjoundi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 17:42:07 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/02 19:53:56 by mjoundi          ###   ########.fr       */
+/*   Updated: 2024/12/02 21:19:52 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,6 @@ void		value_check(char **id, char *line, char **color, t_config *confige);
 void		assign_color(char *id, int rgb[3], t_config *confige, char *line);
 void		color_check(t_config *confige, char *id, int rgb[3], char *line);
 int			parse_color_values(char *str, int rgb[3]);
-void		open_map_and_else(char *av, t_config *confige);
 int			ini_open_mp(int *start, int *end, t_config *confige, char *av);
 int			process_line(char *line, t_config *confige,
 				int *m_start, int *m_end);
@@ -196,4 +195,5 @@ void		calculate_draw_params(t_game *game, t_draw_wall_params *dwp,
 void		render_walls(t_game *game);
 void		render_b(t_game *game);
 int			game_loop(t_game *game);
+void		free_get_next_line_static(void);
 #endif

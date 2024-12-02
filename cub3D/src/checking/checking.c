@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checking.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjoundi <mjoundi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 18:31:09 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/02 19:18:09 by mjoundi          ###   ########.fr       */
+/*   Updated: 2024/12/02 21:21:54 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,7 @@ void	open_map_and_else(char *av, t_config *confige)
 		{
 			free_config(confige);
 			close(fd);
+			free(trimmed_line);
 			exit(EXIT_FAILURE);
 		}
 		line = get_next_line(fd);

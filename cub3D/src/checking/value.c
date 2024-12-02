@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   value.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjoundi <mjoundi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 18:28:42 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/02 19:18:06 by mjoundi          ###   ########.fr       */
+/*   Updated: 2024/12/02 20:57:28 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	parse_color_line(char *line, t_config *confige)
 		free(color_values);
 		free(identifier);
 		free(trimmed_line);
+		free(line);
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
