@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mjoundi <mjoundi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 17:42:07 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/02 18:49:41 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/12/02 19:53:56 by mjoundi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,40 +117,83 @@ typedef struct s_wall_params
 	int		side;
 }	t_wall_params;
 
-int		is_surrounded_by_walls(char **map, int i, int j);
-int		close_check(int *i, char **map, int *j);
-int		get_map_height(char **map);
-int		is_line_closed(char *line);
-int		is_map_line(char *line);
-int		is_color_line(char *line);
-int		is_texture_line(char *line);
-int		trim_and_convert_color(char *color_str, int *color_value);
-int		is_map_line(char *line);
-char	*get_texture_path(char **parts, t_config *confige);
-char	*get_next_line(int fd);
-void	open_map_and_else(char *av, t_config *confige);
-void	write_error(char *str);
-void	convert_map_list_to_array(t_config *config);
-void	free_config(t_config *config);
-void	validate_map(t_config *confige);
-void	two_d_free(char **str);
-void	texture_err(int len, char *path, char **parts, t_config *confige);
-void	add_to_map(char *line, t_config *config);
-void	map_err(t_map_node *new_node);
-void	parse_color_line(char *line, t_config *confige);
-void	error_msg(t_config *confige);
-void	open_map_error(t_config *confige, int fd);
-void	assign_err(char *path, char **parts, t_config *confige);
-void	assign_north(char *path, char **parts, t_config *confige);
-void	check_type(char **trimmed_line, t_config *config);
-void	parse_values(char *line, char **id, char **color, t_config *confige);
-void	value_check(char **id, char *line, char **color, t_config *confige);
-void	assign_color(char *id, int rgb[3], t_config *confige, char *line);
-void	color_check(t_config *confige, char *id, int rgb[3], char *line);
-int		parse_color_values(char *str, int rgb[3]);
-void	open_map_and_else(char *av, t_config *confige);
-int		ini_open_mp(int *start, int *end, t_config *confige, char *av);
-int		process_line(char *line, t_config *confige, int *m_start, int *m_end);
-void	parse_texture_line(char *line, t_config *confige);
-void	assign(char *id, char *path, t_config *confige, char **parts);
+int			is_surrounded_by_walls(char **map, int i, int j);
+int			close_check(int *i, char **map, int *j);
+int			get_map_height(char **map);
+int			is_line_closed(char *line);
+int			is_map_line(char *line);
+int			is_color_line(char *line);
+int			is_texture_line(char *line);
+int			trim_and_convert_color(char *color_str, int *color_value);
+int			is_map_line(char *line);
+char		*get_texture_path(char **parts, t_config *confige);
+char		*get_next_line(int fd);
+void		open_map_and_else(char *av, t_config *confige);
+void		write_error(char *str);
+void		convert_map_list_to_array(t_config *config);
+void		free_config(t_config *config);
+void		validate_map(t_config *confige);
+void		two_d_free(char **str);
+void		texture_err(int len, char *path, char **parts, t_config *confige);
+void		add_to_map(char *line, t_config *config);
+void		map_err(t_map_node *new_node);
+void		parse_color_line(char *line, t_config *confige);
+void		error_msg(t_config *confige);
+void		open_map_error(t_config *confige, int fd);
+void		assign_err(char *path, char **parts, t_config *confige);
+void		assign_north(char *path, char **parts, t_config *confige);
+void		check_type(char **trimmed_line, t_config *config);
+void		parse_values(char *line, char **id, char **color,
+				t_config *confige);
+void		value_check(char **id, char *line, char **color, t_config *confige);
+void		assign_color(char *id, int rgb[3], t_config *confige, char *line);
+void		color_check(t_config *confige, char *id, int rgb[3], char *line);
+int			parse_color_values(char *str, int rgb[3]);
+void		open_map_and_else(char *av, t_config *confige);
+int			ini_open_mp(int *start, int *end, t_config *confige, char *av);
+int			process_line(char *line, t_config *confige,
+				int *m_start, int *m_end);
+void		parse_texture_line(char *line, t_config *confige);
+void		assign(char *id, char *path, t_config *confige, char **parts);
+void		update_direction(t_game *game);
+void		render_b(t_game *game);
+int			game_loop(t_game *game);
+void		free_config_1(t_config *config);
+void		free_config(t_config *config);
+void		write_error(char *str);
+void		validate_config(t_config *confige);
+t_config	check_map(char *av);
+void		file_name(char *str);
+void		destroing(t_game *game);
+void		exit_program(t_game *game);
+int			close_window(t_game *game);
+void		initialize_mlx(t_game *game);
+void		initialize_window(t_game *game);
+void		initialize_image(t_game *game);
+void		initialize_player(t_game *game);
+void		initialize_game_window(t_game *game);
+void		set_pixel(t_game *game, int x, int y, int color);
+void		draw_floor(t_game *game);
+void		update_direction(t_game *game);
+void		handle_mov2(double new_x, double new_y, t_game *game);
+void		handle_movement(int keycode, t_game *game, double move_speed);
+int			key_press(int keycode, t_game *game);
+void		draw_ceiling(t_game *game);
+void		render_c(t_game *game);
+void		load_textures(t_game *game);
+void		draw_wall(t_game *game, t_draw_wall_params *params);
+void		calculate_wall_params(t_game *game, t_wall_params *wp, int x);
+void		set_step_and_side_dist(t_game *game, t_wall_params *wp);
+void		perform_dda(t_game *game, t_wall_params *wp);
+void		calculate_perp_wall_dist(t_game *game, t_wall_params *wp);
+void		calculate_line_params(t_game *game, t_draw_wall_params *dwp,
+				t_wall_params *wp);
+void		calculate_texture_id(t_draw_wall_params *dwp, t_wall_params *wp);
+void		calculate_texture_coords(t_game *game, t_draw_wall_params *dwp,
+				t_wall_params *wp);
+void		calculate_draw_params(t_game *game, t_draw_wall_params *dwp,
+				t_wall_params *wp, int x);
+void		render_walls(t_game *game);
+void		render_b(t_game *game);
+int			game_loop(t_game *game);
 #endif

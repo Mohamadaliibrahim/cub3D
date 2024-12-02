@@ -10,7 +10,15 @@ SRC =	cub3d.c \
 		src/checking/checking.c\
 		src/checking/parsing.c\
 		src/checking/utils.c\
-		src/checking/value.c
+		src/checking/value.c\
+		src/mlx/calc.c\
+		src/mlx/draw_and_move.c\
+		src/mlx/draw2.c\
+		src/mlx/error_free.c\
+		src/mlx/exit_check.c\
+		src/mlx/init.c\
+		src/mlx/render_calc2.c
+
 
 OBJ = $(SRC:.c=.o)
 NAME = cub3
