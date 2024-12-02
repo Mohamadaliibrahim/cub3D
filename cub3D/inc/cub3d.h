@@ -6,7 +6,7 @@
 /*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 17:42:07 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/02 21:19:52 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/12/02 22:19:18 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,5 +195,5 @@ void		calculate_draw_params(t_game *game, t_draw_wall_params *dwp,
 void		render_walls(t_game *game);
 void		render_b(t_game *game);
 int			game_loop(t_game *game);
-void		free_get_next_line_static(void);
+void		free_get_next_line(void);
 #endif

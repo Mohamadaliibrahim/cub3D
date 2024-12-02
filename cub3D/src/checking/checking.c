@@ -6,7 +6,7 @@
 /*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 18:31:09 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/02 21:21:54 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/12/02 22:38:11 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	process_line(char *line, t_config *confige, int *m_start, int *m_end)
 			if (*m_end)
 			{
 				write_error("Error: Invalid content after map data\n");
-				return (free(line), -1);
+				return (-1);
 			}
 			*m_start = 1;
 			add_to_map(line, confige);
@@ -84,7 +84,7 @@ int	process_line(char *line, t_config *confige, int *m_start, int *m_end)
 	}
 	else if (*m_start)
 		*m_end = 1;
-	return (free(line), 0);
+	return (0);
 }
 
 int	ini_open_mp(int *map_started, int *map_ended, t_config *confige, char *av)
@@ -130,6 +130,7 @@ void	open_map_and_else(char *av, t_config *confige)
 			free(trimmed_line);
 			exit(EXIT_FAILURE);
 		}
+		free(trimmed_line);
 		line = get_next_line(fd);
 	}
 	close(fd);
