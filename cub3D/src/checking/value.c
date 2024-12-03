@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   value.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 18:28:42 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/03 02:52:33 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/03 13:55:28 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	error_msg(t_config *confige)
 	exit(EXIT_FAILURE);
 }
 
-void	parse_color_line(char *line, t_config *confige)
+int	parse_color_line(char *line, t_config *confige)
 {
 	char	*trimmed_line;
 	char	*identifier;
@@ -36,14 +36,14 @@ void	parse_color_line(char *line, t_config *confige)
 		free(color_values);
 		free(identifier);
 		free(trimmed_line);
-		free(line);
 		free_config(confige);
-		exit(EXIT_FAILURE);
+		return (1);
 	}
 	assign_color(identifier, rgb, confige, trimmed_line);
 	free(color_values);
 	free(identifier);
 	free(trimmed_line);
+	return (0);
 }
 
 void	map_err(t_map_node *new_node)
@@ -81,14 +81,15 @@ void	add_to_map(char *line, t_config *config)
 	}
 }
 
-void	texture_err(int len, char *path, char **parts, t_config *confige)
+int	texture_err(int len, char *path, char **parts, t_config *confige)
 {
+	(void)confige;
 	if (len < 4 || ft_strcmp(&path[len - 4], ".xpm") != 0)
 	{
 		write_error("Error: Texture file is not a .xpm file\n");
 		free(path);
 		two_d_free(parts);
-		free_config(confige);
-		exit(EXIT_FAILURE);
+		return (1);
 	}
+	return (0);
 }

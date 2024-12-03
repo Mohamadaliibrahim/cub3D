@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checking_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 20:35:35 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/03 03:33:39 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/03 13:54:49 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,32 +55,31 @@ int	trim_and_convert_color(char *color_str, int *color_value)
 	return (1);
 }
 
-char	*get_texture_path(char **parts, t_config *confige)
+int	get_texture_path(char **parts, t_config *confige, char **texture_path)
 {
-	char	*texture_path;
+	char	*path;
 	int		fd;
 	int		len;
 
-	texture_path = ft_strdup(parts[1]);
-	if (!texture_path)
+	path = ft_strdup(parts[1]);
+	if (!path)
 	{
 		write_error("Error: Memory allocation failed for texture path\n");
 		two_d_free(parts);
-		free_config(confige);
-		exit(EXIT_FAILURE);
+		return (1);
 	}
-	fd = open(texture_path, O_RDONLY);
+	fd = open(path, O_RDONLY);
 	if (fd == -1)
 	{
 		write_error("Error: Texture file not found\n");
-		free(texture_path);
-		free(confige->temp);
+		free(path);
 		two_d_free(parts);
-		free_config(confige);
-		exit(EXIT_FAILURE);
+		return (1);
 	}
 	close(fd);
-	len = ft_strlen(texture_path);
-	texture_err(len, texture_path, parts, confige);
-	return (texture_path);
+	len = ft_strlen(path);
+	if (texture_err(len, path, parts, confige))
+		return (1);
+	*texture_path = path;
+	return (0);
 }

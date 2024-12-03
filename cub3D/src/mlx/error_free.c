@@ -6,7 +6,7 @@
 /*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 19:32:13 by mjoundi           #+#    #+#             */
-/*   Updated: 2024/12/02 20:40:20 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/12/03 11:29:09 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@ void	free_config_1(t_config *config)
 	{
 		free(config->ea_texture);
 		config->ea_texture = NULL;
+	}
+	if (config->memold)
+	{
+		free(config->memold);
+		config->memold = NULL;
 	}
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 18:29:20 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/03 03:28:11 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/03 13:55:53 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,19 +37,24 @@ void	assign_north(char *path, char **parts, t_config *confige)
 	confige->no_texture = path;
 }
 
-void	check_type(char **trimmed_line, t_config *config)
+int	check_type(char **trimmed_line, t_config *config)
 {
 	if (is_texture_line(*trimmed_line))
-		parse_texture_line(*trimmed_line, config);
+	{
+		if (parse_texture_line(*trimmed_line, config))
+			return (1);
+	}
 	else if (is_color_line(*trimmed_line))
-		parse_color_line(*trimmed_line, config);
+	{
+		if (parse_color_line(*trimmed_line, config))
+			return (1);
+	}
 	else
 	{
 		write_error("Error: Invalid line in map file\n");
-		free(*trimmed_line);
-		free_config(config);
-		exit(EXIT_FAILURE);
+		return (1);
 	}
+	return (0);
 }
 
 void	two_d_free(char **str)

@@ -3,8 +3,9 @@ CFLAGS = -Wall -Wextra -Werror -g
 
 SRC =	cub3d.c \
 		src/checking/checking_map.c \
-		src/get_next_line/get_next_line.c \
-		src/converting/converting.c \
+		src/checking/checking_utils.c\
+		src/get_next_line/get_next_line.c\
+		src/converting/converting.c\
 		src/validate_map/validate_map.c\
 		src/validate_map/utils.c\
 		src/checking/checking.c\
@@ -21,7 +22,7 @@ SRC =	cub3d.c \
 
 
 OBJ = $(SRC:.c=.o)
-NAME = cub3
+NAME = cub3d
 
 # Directories for libraries
 FT_PRINTF_DIR = ft_printf

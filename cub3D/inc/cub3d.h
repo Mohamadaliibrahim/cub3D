@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 17:42:07 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/03 03:30:05 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/03 14:10:16 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,25 +40,26 @@ typedef struct s_map_node
 
 typedef struct s_config
 {
-	char		*no_texture;
-	char		*so_texture;
-	char		*we_texture;
-	char		*ea_texture;
-	int			player_x;
-	int			player_y;
-	char		player_orientation;
-	int			f_r;
-	int			f_g;
-	int			f_b;
-	int			c_r;
-	int			c_g;
-	int			c_b;
-	int			map_width;
-	int			map_height;
-	char		**map;
-	char		*temp;//zedet ha l variable ta aamal fi store lal line w aamallo free b 7al error bl textures
-	t_map_node	*map_list;
-}				t_config;
+	char			*no_texture;
+	char			*so_texture;
+	char			*we_texture;
+	char			*ea_texture;
+	int				player_x;
+	int				player_y;
+	char			player_orientation;
+	int				f_r;
+	int				f_g;
+	int				f_b;
+	int				c_r;
+	int				c_g;
+	int				c_b;
+	int				map_width;
+	int				map_height;
+	char		*memold;
+	char			**map;
+	char			*temp;//zedet ha l variable ta aamal fi store lal line w aamallo free b 7al error bl textures
+	t_map_node		*map_list;
+}					t_config;
 
 typedef struct s_game
 {
@@ -117,7 +118,6 @@ typedef struct s_wall_params
 	int		hit;
 	int		side;
 }	t_wall_params;
-
 int			is_surrounded_by_walls(char **map, int i, int j);
 int			close_check(int *i, char **map, int *j);
 int			get_map_height(char **map);
@@ -126,24 +126,21 @@ int			is_map_line(char *line);
 int			is_color_line(char *line);
 int			is_texture_line(char *line);
 int			trim_and_convert_color(char *color_str, int *color_value);
-int			is_map_line(char *line);
-char		*get_texture_path(char **parts, t_config *confige);
-char		*get_next_line(int fd);
+int			get_texture_path(char **parts, t_config *confige, char **ok);
+char		*get_next_line(int fd, t_config *config);
 void		open_map_and_else(char *av, t_config *confige);
-void		write_error(char *str);
 void		convert_map_list_to_array(t_config *config);
-void		free_config(t_config *config);
 void		validate_map(t_config *confige);
 void		two_d_free(char **str);
-void		texture_err(int len, char *path, char **parts, t_config *confige);
+int			texture_err(int len, char *path, char **parts, t_config *confige);
 void		add_to_map(char *line, t_config *config);
 void		map_err(t_map_node *new_node);
-void		parse_color_line(char *line, t_config *confige);
+int			parse_color_line(char *line, t_config *confige);
 void		error_msg(t_config *confige);
 void		open_map_error(t_config *confige, int fd);
 void		assign_err(char *path, char **parts, t_config *confige);
 void		assign_north(char *path, char **parts, t_config *confige);
-void		check_type(char **trimmed_line, t_config *config);
+int			check_type(char **trimmed_line, t_config *config);
 void		parse_values(char *line, char **id, char **color,
 				t_config *confige);
 void		value_check(char **id, char *line, char **color, t_config *confige);
@@ -153,11 +150,9 @@ int			parse_color_values(char *str, int rgb[3]);
 int			ini_open_mp(int *start, int *end, t_config *confige, char *av);
 int			process_line(char *line, t_config *confige,
 				int *m_start, int *m_end);
-void		parse_texture_line(char *line, t_config *confige);
+int			parse_texture_line(char *line, t_config *confige);
 void		assign(char *id, char *path, t_config *confige, char **parts);
-void		update_direction(t_game *game);
 void		render_b(t_game *game);
-int			game_loop(t_game *game);
 void		free_config_1(t_config *config);
 void		free_config(t_config *config);
 void		write_error(char *str);
@@ -194,7 +189,7 @@ void		calculate_texture_coords(t_game *game, t_draw_wall_params *dwp,
 void		calculate_draw_params(t_game *game, t_draw_wall_params *dwp,
 				t_wall_params *wp, int x);
 void		render_walls(t_game *game);
-void		render_b(t_game *game);
 int			game_loop(t_game *game);
-void		free_get_next_line_static(void);
+void		error_free(char *line, t_config *confige);
+void		free_map_list(t_config *confige);
 #endif
