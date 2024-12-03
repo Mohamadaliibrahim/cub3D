@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 18:29:20 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/02 22:13:28 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/12/03 03:28:11 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	assign_err(char *path, char **parts, t_config *confige)
 	write_error("Error: Duplicate NO texture definition\n");
 	free(path);
 	two_d_free(parts);
+	free(confige->temp);
 	free_config(confige);
 	exit(EXIT_FAILURE);
 }

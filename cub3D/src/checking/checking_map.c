@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checking_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjoundi <mjoundi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 20:35:35 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/02 19:18:11 by mjoundi          ###   ########.fr       */
+/*   Updated: 2024/12/03 03:33:39 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ char	*get_texture_path(char **parts, t_config *confige)
 	{
 		write_error("Error: Texture file not found\n");
 		free(texture_path);
+		free(confige->temp);
 		two_d_free(parts);
 		free_config(confige);
 		exit(EXIT_FAILURE);

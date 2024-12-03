@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checking.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 18:31:09 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/02 22:38:11 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/12/03 03:33:07 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	parse_texture_line(char *line, t_config *confige)
 		free_config(confige);
 		exit(EXIT_FAILURE);
 	}
+		confige->temp = line;//here 3tyta l line ta aamala free bas b 7al err, pic 4 adn pc 5
 	texture_path = get_texture_path(parts, confige);
 	assign(parts[0], texture_path, confige, parts);
 	two_d_free(parts);
@@ -67,7 +68,19 @@ int	process_line(char *line, t_config *confige, int *m_start, int *m_end)
 			if (*m_end)
 			{
 				write_error("Error: Invalid content after map data\n");
-				return (-1);
+				//added today 1st image
+				t_map_node *current;
+				t_map_node *temp;
+				current = confige->map_list;
+				while (current != NULL)
+				{
+					free(current->line);
+					temp = current;
+					current = current->next;
+					free(temp);
+				}
+				//to here
+				return (free(line), -1);
 			}
 			*m_start = 1;
 			add_to_map(line, confige);
@@ -78,13 +91,25 @@ int	process_line(char *line, t_config *confige, int *m_start, int *m_end)
 		{
 			*m_end = 1;
 			write_error("Error: Invalid line in map file after map data\n");
+			//added today 2nd image
+			t_map_node *current;
+			t_map_node *temp;
+			current = confige->map_list;
+			while (current != NULL)
+			{
+				free(current->line);
+				temp = current;
+				current = current->next;
+				free(temp);
+			}
+			//to here
 			free(line);
 			return (-1);
 		}
 	}
 	else if (*m_start)
 		*m_end = 1;
-	return (0);
+	return (free(line), 0);
 }
 
 int	ini_open_mp(int *map_started, int *map_ended, t_config *confige, char *av)
@@ -127,10 +152,9 @@ void	open_map_and_else(char *av, t_config *confige)
 		{
 			free_config(confige);
 			close(fd);
-			free(trimmed_line);
+			//i removed the free (trimmed_line) here ken fi invalid free
 			exit(EXIT_FAILURE);
 		}
-		free(trimmed_line);
 		line = get_next_line(fd);
 	}
 	close(fd);

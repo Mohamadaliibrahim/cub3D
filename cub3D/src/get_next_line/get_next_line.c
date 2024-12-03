@@ -6,13 +6,11 @@
 /*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 17:27:16 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/02 22:52:00 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/12/02 21:31:01 by mohamibr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
-
-static char	*memold;
 
 char	*ft_strchr(const char *s, int c)
 {
@@ -81,19 +79,11 @@ char	*gettline(char *line, char **memold)
 	return (temp);
 }
 
-void	free_get_next_line(void)
-{
-	if (memold)
-	{
-		free(memold);
-		memold = NULL;
-	}
-}
-
 char	*get_next_line(int fd)
 {
-	char	*line;
-	char	*data;
+	char		*line;
+	char		*data;
+	static char	*memold;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -103,7 +93,7 @@ char	*get_next_line(int fd)
 	line = getdata(fd, data, memold);
 	free(data);
 	if (!line)
-	{
+	{	
 		free(memold);
 		memold = NULL;
 		return (NULL);

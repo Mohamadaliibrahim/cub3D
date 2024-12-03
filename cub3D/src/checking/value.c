@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   value.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohamibr <mohamibr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 18:28:42 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/02 22:36:32 by mohamibr         ###   ########.fr       */
+/*   Updated: 2024/12/03 02:52:33 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,7 @@ void	parse_color_line(char *line, t_config *confige)
 
 	trimmed_line = ft_strtrim(line, " \t");
 	if (!trimmed_line)
-	{
 		error_msg(confige);
-		free_get_next_line();
-	}
 	parse_values(trimmed_line, &identifier, &color_values, confige);
 	if (!parse_color_values(color_values, rgb))
 	{
@@ -41,7 +38,6 @@ void	parse_color_line(char *line, t_config *confige)
 		free(trimmed_line);
 		free(line);
 		free_config(confige);
-		free_get_next_line();
 		exit(EXIT_FAILURE);
 	}
 	assign_color(identifier, rgb, confige, trimmed_line);

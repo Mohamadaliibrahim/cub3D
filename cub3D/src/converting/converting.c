@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   converting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjoundi <mjoundi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 20:35:35 by mohamibr          #+#    #+#             */
-/*   Updated: 2024/12/02 19:18:16 by mjoundi          ###   ########.fr       */
+/*   Updated: 2024/12/03 03:20:51 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ void	convert_map_list_to_array(t_config *config)
 	if (!config->map_list)
 	{
 		write_error("Error: Map list is empty\n");
+		free_config(config);//3th pic
 		exit(1);
 	}
 	count = get_map_dimensions(config, &max_width);
